@@ -1,7 +1,10 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
-Vagrant::Config.run do |config|
+# Vagrantfile API/syntax version. Don't touch unless you know what you're doing!
+VAGRANTFILE_API_VERSION = "2"
+
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   # Every Vagrant virtual environment requires a box to build off of.
   config.vm.box = "centos-6.3-64"
@@ -14,7 +17,7 @@ Vagrant::Config.run do |config|
   # via the IP. Host-only networks can talk to the host machine as well as
   # any other machines on the same network, but cannot be accessed (through this
   # network interface) by any external networks.
-  config.vm.network :hostonly, "192.168.33.10"
+  config.vm.network :private_network, ip: "192.168.33.10"
 
   config.vm.host_name = "centos.local"
 
@@ -30,8 +33,8 @@ Vagrant::Config.run do |config|
   # Share an additional folder to the guest VM. The first argument is
   # an identifier, the second is the path on the guest to mount the
   # folder, and the third is the path on the host to the actual folder.
-  config.vm.share_folder "v-www", 	"/www",		"./shared/www", 	:extra => 'dmode=777,fmode=777'
-  config.vm.share_folder "v-logs", 	"/logs",	"./shared/logs",	:extra => 'dmode=777,fmode=777'
+  config.vm.synced_folder "./shared/www", "/www", :mount_options => ["dmode=777,fmode=777"]
+  config.vm.synced_folder "./shared/logs", "/logs", :mount_options => ["dmode=777,fmode=777"]
 
   config.vm.provision :puppet,
     :options => ["--fileserverconfig=fileserver.conf"],
